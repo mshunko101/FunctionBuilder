@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+            xmlns:vm="using:FunctionBuilder.ViewModels"
+             x:DataType="vm:TableFunctionViewModel"
+             x:Class="FunctionBuilder.Views.TableFunctionView">
+
+
+<DataGrid Margin="20" ItemsSource="{Binding Points, Mode=TwoWay}"
+          IsReadOnly="False"
+          CanUserReorderColumns="False"
+          CanUserResizeColumns="False"
+          CanUserSortColumns="False"
+          GridLinesVisibility="All"
+          BorderThickness="1" BorderBrush="Gray">
+  <DataGrid.KeyBindings>
+    <KeyBinding Gesture="Insert" Command="{Binding AddItemCommand}"/>
+  </DataGrid.KeyBindings>
+  <DataGrid.Columns>
+     <DataGridTextColumn Header="X" Width="100" Binding="{Binding X}"/>
+     <DataGridTextColumn Header="Y"  Width="100" Binding="{Binding Y}" />
+  </DataGrid.Columns>
+</DataGrid>
+</UserControl>
