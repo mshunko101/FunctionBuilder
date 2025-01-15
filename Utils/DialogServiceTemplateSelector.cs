@@ -9,7 +9,7 @@ namespace FunctionBuilder.Utils;
 public class DialogServiceTemplateSelector : IDataTemplate
 {
     [Content]
-    public Dictionary<string, IDataTemplate>? AvailableTemplates { get; } = new Dictionary<string, IDataTemplate>();
+    public Dictionary<string, IDataTemplate> AvailableTemplates { get; } = new Dictionary<string, IDataTemplate>();
     public Control Build(object? param)
     {
         var key = param?.ToString();

@@ -8,7 +8,7 @@ namespace FunctionBuilder.Utils
     {
         public static readonly AttachedProperty<object> SelectedItemsProperty = 
         AvaloniaProperty.RegisterAttached<DataGrid, Control, object>("SelectedItems");
-        static object currValue;
+        static object? currValue;
 
         static DataGridAdditionalProperties()
         {
@@ -35,8 +35,8 @@ namespace FunctionBuilder.Utils
         {
             if(sender is DataGrid dataGrid)
             {
-                IList list = dataGrid.GetValue(SelectedItemsProperty) as IList;
-                if(list != null)
+                var obj = dataGrid.GetValue(SelectedItemsProperty);
+                if(obj is IList list)
                 {
                     list.Clear();
                     foreach(var item in dataGrid.SelectedItems)

@@ -21,9 +21,9 @@ public class DataExporter : IDataExporter, IDataImporter
     {
         XmlReader reader = XmlReader.Create(fileName);
         XmlSerializer serializer = reader.GetApproapriateSerializator<IFunctionsStore>();
-        var store = (IFunctionsStore)serializer.Deserialize(reader)!;
+        var store =serializer.Deserialize(reader) as IFunctionsStore ?? throw new ArgumentException("Ошибка импорта");
         reader.Close();
-        return store!;
+        return store;
     }
 
     public void Export(IFunctionsStore funcs, string fileName, ExportFormat format)

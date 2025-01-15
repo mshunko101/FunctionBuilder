@@ -32,7 +32,7 @@ public partial class TableFunctionViewModel : ViewModelBase
     public async void MenuPasteCommand()
     {
         var items = await cs.Fetch();
-        var index = Points.IndexOf(SelectedItems.LastOrDefault());
+        var index = Points.IndexOf(SelectedItems.LastOrDefault()!);
         if (index != -1)
         {
             foreach (var item in items)
@@ -56,7 +56,7 @@ public partial class TableFunctionViewModel : ViewModelBase
 
     public void AddItemCommand()
     {
-        var index = Points.IndexOf(SelectedItems.FirstOrDefault());
+        var index = Points.IndexOf(SelectedItems.FirstOrDefault()!);
         if (index != -1)
         {
             Points.Insert(index, new PointViewModel(0, 0));

@@ -8,7 +8,7 @@ public partial class PointViewModel : ViewModelBase
     private double x;
     [ObservableProperty]
     private double y;
-    private static PointViewModel empty;
+    private static PointViewModel? empty;
 
     public PointViewModel(double _x, double _y)
     {

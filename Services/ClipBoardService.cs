@@ -21,12 +21,19 @@ public class ClipBoardService : IClipBoardService
         if (win != null)
         {
             var cp = win.Clipboard;
+            if(cp == null)
+            {
+                return Enumerable.Empty<PointViewModel>();
+            }
             var cpFormats = await cp.GetFormatsAsync();
             var supported = cpFormats.Contains(SupportedFormat);
             if (supported)
             {
                 var data = await cp.GetDataAsync(SupportedFormat);
-                return ParseText(data.ToString());
+                if(data != null)
+                {
+                    return ParseText(data.ToString());
+                }
             }
             return Enumerable.Empty<PointViewModel>();
         }
@@ -57,7 +64,7 @@ public class ClipBoardService : IClipBoardService
         return false;
     }
 
-    private IEnumerable<PointViewModel> ParseText(string data)
+    private IEnumerable<PointViewModel> ParseText(string? data)
     {
         if(string.IsNullOrEmpty(data))
         {

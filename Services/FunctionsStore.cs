@@ -37,7 +37,7 @@ public class FunctionsStore : IFunctionsStore
 
     public IFunction AddNew<T>()
     {
-        var func = (IFunction)Activator.CreateInstance(typeof(T))!;
+        var func = Activator.CreateInstance(typeof(T)) as IFunction ?? throw new ArgumentException("Невозможно создать экземпляр типа");
         _functionsStore.Add(func);
         return func;
     }
@@ -69,7 +69,7 @@ public class FunctionsStore : IFunctionsStore
         for (var i = 0; i < count; i++)
         {
             XmlSerializer serializer = reader.GetApproapriateSerializator<IFunction>();
-            var function = (IFunction)serializer.Deserialize(reader)!;
+            var function = serializer.Deserialize(reader) as IFunction ?? throw new ArgumentException("Ошибка импорта функции");
             Add(function);
         }
         reader.ReadEndElement();

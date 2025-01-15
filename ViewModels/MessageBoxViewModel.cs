@@ -18,6 +18,6 @@ public partial class MessageBoxViewModel : EmbedViewModel
 
     public void CloseCommand()
     {
-        _closeCallBack(this);
+        _closeCallBack?.Invoke(this);
     }
 }

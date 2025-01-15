@@ -108,25 +108,31 @@ public partial class ChartViewModel : ViewModelBase
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                foreach (var item in e.NewItems)
+                if (e.NewItems != null)
                 {
-                    var function = (IFunction)item;
-                    Series.Add(new LineSeries<PointViewModel>(function.PointsData)
+                    foreach (var item in e.NewItems)
                     {
-                        DataLabelsSize = 20,
-                        DataLabelsPaint = new SolidColorPaint(seriesColors[Series.Count]),
-                        LineSmoothness = 0,
-                        Mapping = (sample, index) => new(sample.X, sample.Y),
-                        Tag = function
-                    });
+                        var function = (IFunction)item;
+                        Series.Add(new LineSeries<PointViewModel>(function.PointsData)
+                        {
+                            DataLabelsSize = 20,
+                            DataLabelsPaint = new SolidColorPaint(seriesColors[Series.Count%seriesColors.Length]),
+                            LineSmoothness = 0,
+                            Mapping = (sample, index) => new(sample.X, sample.Y),
+                            Tag = function
+                        });
+                    }
                 }
                 break;
             case NotifyCollectionChangedAction.Remove:
-                foreach (var item in e.OldItems)
+                if (e.OldItems != null)
                 {
-                    var function = (IFunction)item;
-                    var serie = Series.First(i => i.Tag == function);
-                    Series.Remove(serie);
+                    foreach (var item in e.OldItems)
+                    {
+                        var function = (IFunction)item;
+                        var serie = Series.First(i => i.Tag == function);
+                        Series.Remove(serie);
+                    }
                 }
                 break;
             case NotifyCollectionChangedAction.Reset:
