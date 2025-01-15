@@ -5,7 +5,7 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using FunctionBuilder.ViewModels;
 using FunctionBuilder.Views;
-using Unity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FunctionBuilder;
 
@@ -20,11 +20,11 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var container = CompositionRoot.Compose();
+            var services = CompositionRoot.Compose();
             // Line below is needed to remove Avalonia data validation.
             // Without this line you will get duplicate validations from both Avalonia and CT
             BindingPlugins.DataValidators.RemoveAt(0);
-            var vm = container.Resolve<MainWindowViewModel>();
+            var vm = services.GetService<MainWindowViewModel>();
             desktop.MainWindow = new MainWindow
             {
                 DataContext = vm,

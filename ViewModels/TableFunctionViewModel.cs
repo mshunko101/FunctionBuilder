@@ -10,25 +10,79 @@ using LiveChartsCore.Defaults;
 
 namespace FunctionBuilder.ViewModels
 {
-    public partial class TableFunctionViewModel : ViewModelBase, IPointsDataSource
+    public partial class TableFunctionViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private ObservableCollection<ObservablePoint> points;
+        private ObservableCollection<PointViewModel> points;
+        [ObservableProperty]
+        private ObservableCollection<PointViewModel> selectedItems;
+        private IClipBoardService cs;
 
-        public TableFunctionViewModel()
+
+        public TableFunctionViewModel(IFunction dataSource, IClipBoardService cs)
         {
-            Points = new ObservableCollection<ObservablePoint>(){new ObservablePoint(0,0)};
+            this.cs = cs;
+            var ds = dataSource.PointsData;
+            SelectedItems = new ObservableCollection<PointViewModel>();
+            if(ds is ObservableCollection<PointViewModel> ocDs)
+            {
+                Points = ocDs;
+            }
+            else
+            {
+                throw new ArgumentException($"Неверный тип аргумента {nameof(dataSource)}");
+            }
         }
 
-        public ICollection<ObservablePoint> GetPointsDataSource()
+        public async void MenuPasteCommand()
         {
-            return Points;
+            var items = await cs.Fetch();
+            var index = Points.IndexOf(SelectedItems.LastOrDefault());
+            if(index != -1)
+            {
+                foreach(var item in items)
+                {
+                    Points.Insert(index++, item);
+                }
+            }
+            else
+            {
+                foreach(var item in items)
+                {
+                    Points.Add(item);
+                }
+            }
+        }
+
+        public async void MenuCopyCommand()
+        {
+            await cs.Put(Points);
         }
 
         public void AddItemCommand()
         {
-            Points.Add(new ObservablePoint(5,5));
+            var index = Points.IndexOf(SelectedItems.FirstOrDefault());
+            if(index != -1)
+            {
+                Points.Insert(index, new PointViewModel(0,0));
+            }
+            else
+            {
+                Points.Add(new PointViewModel(0,0));
+            }
         }
 
+        public void DelItemCommand()
+        {
+            var array = SelectedItems.ToArray();
+            foreach(var item in array)
+            {
+                var index = Points.IndexOf(item);
+                if(index != -1)
+                {
+                    Points.RemoveAt(index);
+                }
+            }
+        }
     }
 }

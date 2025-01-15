@@ -1,18 +1,25 @@
 using FunctionBuilder.Abstract;
 using FunctionBuilder.ViewModels;
-using Unity;
-using Unity.Injection;
+using Microsoft.Extensions.DependencyInjection;
+using FunctionBuilder.Services;
+using System;
+ 
 
 public static class CompositionRoot
 {
-    public static IUnityContainer Compose()
+    public static IServiceProvider Compose()
     {
-        IUnityContainer container = new UnityContainer();
+        var services = new ServiceCollection();
+        services.AddSingleton<MainWindowViewModel>();
+        services.AddSingleton<ChartViewModel>();
+        services.AddSingleton<TableFunctionViewModel>();
+        services.AddScoped<IDialogService, DialogService>();
+        services.AddScoped<IDataExporter, DataExporter>();
+        services.AddScoped<IDataImporter, DataExporter>();
+        services.AddScoped<IFunctionsStore,FunctionsStore>();
+        services.AddScoped<IClipBoardService, ClipBoardService>();
 
-        container.RegisterSingleton<MainWindowViewModel>();
-        container.RegisterSingleton<ChartViewModel>();
-        container.RegisterSingleton<TableFunctionViewModel>();
-
-        return container;
+        return services.BuildServiceProvider();
     }
+
 }

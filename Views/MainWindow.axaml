@@ -8,8 +8,9 @@
         x:Class="FunctionBuilder.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        MaxWidth="800"
-        Title="FunctionBuilder">
+        xmlns:c="using:FunctionBuilder.Controls"
+        x:Name="mainWindowView"
+        Title="{Binding Title}">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -22,8 +23,35 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        <vw:ChartView DataContext="{Binding ChartViewModel}" Grid.Column="0"/>
-        <vw:TableFunctionView DataContext="{Binding TableFunctionViewModel}"  Grid.Column="1" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0">
+            <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Файл">
+                <MenuItem Header="_Экспорт функции" Command="{Binding ExportFuncCommand}"/>
+                <MenuItem Header="_Импорт функции" Command="{Binding ImportFuncCommand}"/>
+                <MenuItem Header="_Экспорт Всё" Command="{Binding ExportAllCommand}"/>
+                <MenuItem Header="_Импорт Всё" Command="{Binding ImportAllCommand}"/>
+                <Separator/>
+                <MenuItem Header="_Выход"/>
+            </MenuItem>
+            <MenuItem Header="_Функция" ItemsSource="{Binding #mainWindowView.((vm:MainWindowViewModel)DataContext).FunctionsMenuSubItems}">
+                <MenuItem.Styles>
+                    <Style Selector="MenuItem" x:DataType="vm:MenuItemViewModel">
+                        <Setter Property="ToggleType" Value="Radio"/>
+                        <Setter Property="Header" Value="{Binding Description}"/>
+                        <Setter Property="IsChecked" Value="{Binding IsChecked, Mode=TwoWay}"/>
+                        <Setter Property="CommandParameter" Value="{Binding Index}"/>
+                        <Setter Property="Command" Value="{Binding #mainWindowView.((vm:MainWindowViewModel)DataContext).FunctionMenuCommand}"/>
+                    </Style>
+                </MenuItem.Styles>  
+            </MenuItem>
+            </Menu>
+        </DockPanel>
+        <vw:ChartView Grid.Row="1" DataContext="{Binding ChartViewModel}" Grid.Column="0"/>
+        <vw:TableFunctionView Grid.Row="1" DataContext="{Binding ActiveTableFunctionViewModel}"  Grid.Column="1" />
     </Grid>
 
 </Window>

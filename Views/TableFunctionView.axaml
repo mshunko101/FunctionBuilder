@@ -3,24 +3,48 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-            xmlns:vm="using:FunctionBuilder.ViewModels"
+             xmlns:props="clr-namespace:FunctionBuilder.Utils"
+             xmlns:vm="using:FunctionBuilder.ViewModels"
+             x:Name="tableControl"
              x:DataType="vm:TableFunctionViewModel"
              x:Class="FunctionBuilder.Views.TableFunctionView">
 
+<Grid>
+  <Grid.RowDefinitions>
+    <RowDefinition Height="*"/>
+    <RowDefinition Height="100"/>
+  </Grid.RowDefinitions>
 
-<DataGrid Margin="20" ItemsSource="{Binding Points, Mode=TwoWay}"
-          IsReadOnly="False"
-          CanUserReorderColumns="False"
-          CanUserResizeColumns="False"
-          CanUserSortColumns="False"
-          GridLinesVisibility="All"
-          BorderThickness="1" BorderBrush="Gray">
-  <DataGrid.KeyBindings>
-    <KeyBinding Gesture="Insert" Command="{Binding AddItemCommand}"/>
-  </DataGrid.KeyBindings>
-  <DataGrid.Columns>
-     <DataGridTextColumn Header="X" Width="100" Binding="{Binding X}"/>
-     <DataGridTextColumn Header="Y"  Width="100" Binding="{Binding Y}" />
-  </DataGrid.Columns>
-</DataGrid>
+  <DataGrid ItemsSource="{Binding Points, Mode=TwoWay}"
+            IsReadOnly="False"
+            CanUserReorderColumns="False"
+            CanUserResizeColumns="False"
+            CanUserSortColumns="False"
+            GridLinesVisibility="All"
+            props:DataGridAdditionalProperties.SelectedItems="{Binding SelectedItems}"
+            SelectionMode="Extended"
+            BorderThickness="1" BorderBrush="Gray">
+    <DataGrid.KeyBindings>
+      <KeyBinding Gesture="Insert" Command="{Binding AddItemCommand}"/>
+      <KeyBinding Gesture="Ctrl+V" Command="{Binding MenuPasteCommand}"/>
+      <KeyBinding Gesture="Ctrl+C" Command="{Binding MenuCopyCommand}"/>
+    </DataGrid.KeyBindings>
+    <DataGrid.ContextMenu>
+      <ContextMenu>
+      <MenuItem Header="Копировать" Command="{Binding #tableControl.((vm:TableFunctionViewModel)DataContext).MenuCopyCommand}"/>
+      <MenuItem Header="Вставить" Command="{Binding #tableControl.((vm:TableFunctionViewModel)DataContext).MenuPasteCommand}"/>
+      <MenuItem Header="Добавить" Command="{Binding #tableControl.((vm:TableFunctionViewModel)DataContext).AddItemCommand}"/>
+      <MenuItem Header="Удалить" Command="{Binding #tableControl.((vm:TableFunctionViewModel)DataContext).DelItemCommand}"/>
+     </ContextMenu>
+    </DataGrid.ContextMenu> 
+    <DataGrid.Columns>
+      <DataGridTextColumn Header="X" Width="1*" Binding="{Binding X}"/>
+      <DataGridTextColumn Header="Y"  Width="1*" Binding="{Binding Y}" />
+    </DataGrid.Columns>
+  </DataGrid>
+  <StackPanel Orientation="Horizontal" Grid.Row="1">
+    <Button Content="Добавить" Command="{Binding AddItemCommand}"/>
+    <Button Content="Удалить" Command="{Binding DelItemCommand}"/>
+  </StackPanel>
+</Grid>
 </UserControl>

@@ -8,7 +8,14 @@
              x:DataType="vm:ChartViewModel"
              x:Class="FunctionBuilder.Views.ChartView">
 
-      <lvc:CartesianChart Name="chart" Series="{Binding Series}" XAxes="{Binding XAxes}" >
+      <lvc:CartesianChart 
+            ChartPointPointerDownCommand="{Binding ChartPointPointerDownCommand}"
+            PointerReleasedCommand="{Binding PointerReleasedCommand}"
+            PointerMoveCommand="{Binding PointerMoveCommand}"
+            Series="{Binding Series}" 
+            XAxes="{Binding XAxes}" 
+            YAxes="{Binding YAxes}"  
+            ZoomMode="None">
       </lvc:CartesianChart>
       
 </UserControl>
