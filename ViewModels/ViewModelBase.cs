@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 namespace FunctionBuilder.ViewModels;
 
 public class ViewModelBase : ObservableObject

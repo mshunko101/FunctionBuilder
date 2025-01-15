@@ -3,7 +3,6 @@ using FunctionBuilder.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using FunctionBuilder.Services;
 using System;
- 
 
 public static class CompositionRoot
 {
@@ -21,5 +20,4 @@ public static class CompositionRoot
 
         return services.BuildServiceProvider();
     }
-
 }

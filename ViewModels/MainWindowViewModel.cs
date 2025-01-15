@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Avalonia.Controls;
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Avalonia;
 
 namespace FunctionBuilder.ViewModels;
 
@@ -23,19 +24,29 @@ public partial class MainWindowViewModel : ViewModelBase
     private ObservableCollection<MenuItemViewModel> functionsMenuSubItems;
     [ObservableProperty]
     private string title;
+    [ObservableProperty]
+    private ViewModelBase model;
+    [ObservableProperty]
+    private double modelOpacity;
+    [ObservableProperty]
+    private bool modelEnabled;
+    [ObservableProperty]
+    private double mainViewOpacity;
+    [ObservableProperty]
+    private bool mainViewEnabled;
     private IDataExporter dataExporter;
     private IDataImporter dataImporter;
     IServiceProvider sp;
     private List<TableFunctionViewModel> tableFunctions;
-    private int selectedFunction;
     private int menuItemCounter;
 
     public MainWindowViewModel(ChartViewModel chartVm, IFunctionsStore funcsStore, IDataExporter dataExporter, IDataImporter dataImporter, IServiceProvider sp)
     {
+        title = string.Empty;
         menuItemCounter = 0;
         chartViewModel = chartVm;
+        FunctionsMenuSubItems = new ObservableCollection<MenuItemViewModel>();
         this.funcsStore = funcsStore;
-        selectedFunction = 0; 
         tableFunctions = new List<TableFunctionViewModel>();
         this.dataExporter = dataExporter;
         this.dataImporter = dataImporter;
@@ -43,6 +54,11 @@ public partial class MainWindowViewModel : ViewModelBase
         FuncsStore.AddNew<TableFunction>();
         BuildFunctionsSubMenu();
         ActiveTableFunctionViewModel = tableFunctions.First();
+        MainViewOpacity = 1.0;
+        ModelOpacity = 0;
+        MainViewEnabled = true;
+        ModelEnabled = false;
+        Model = null;
     }
 
     private void BuildFunctionsSubMenu()
@@ -59,20 +75,17 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     public async void ExportAllCommand()
-    { 
+    {
         var dialogService = sp.GetService<IDialogService>();
-        var fileExtensions = new List<string>() { $"XML File|*.xml" };
-        var extensionFilter = new FileDialogFilter() { Extensions = fileExtensions , Name="name of unknown"};
-        var filename = await dialogService.ShowSaveFileDialogAsync(this, "Сохранить файл как...", extensionFilter);
-        dataExporter.Export(funcsStore, filename, ExportFormat.Xml);
+        var filename = await dialogService.ShowSaveFileDialogAsync(this, "Сохранить файл как...");
+        dataExporter.Export(FuncsStore, filename, ExportFormat.Xml);
+        var modState = FuncsStore.IsModified;
     }
 
     public async void ImportAllCommand()
-    {
+    { 
         var dialogService = sp.GetService<IDialogService>();
-        var fileExtensions = new List<string>() { $"xml" };
-        var extensionFilter = new FileDialogFilter() { Extensions = fileExtensions , Name = "XML File|*.xml"};
-        var filename = await dialogService.ShowOpenFileDialogAsync(this, "Открыть файл...", extensionFilter); 
+        var filename = await dialogService.ShowOpenFileDialogAsync(this, "Открыть файл..."); 
         var funcs = dataImporter.Import(filename);
         FuncsStore.RemoveAll();
         foreach(var f in funcs.GetEnumerable())
@@ -84,14 +97,14 @@ public partial class MainWindowViewModel : ViewModelBase
         ActiveTableFunctionViewModel = tableFunctions[tableFunctions.Count - 1];
     }
 
-    public void ExportFuncCommand()
+    public void ExitCommand()
     {
-
-    }
-
-    public void ImportFuncCommand()
-    {
-
+        if(FuncsStore.IsModified)
+        {
+            ShowDialog(new MessageBoxViewModel(nameof(MainWindowViewModel), CloseDialog) { Title = "Внимание!", Message = "Данные были модифицированы, отменить закрытие программы?" });
+            return;
+        }
+        Environment.Exit(0);
     }
 
     public void FunctionMenuCommand(object param)
@@ -107,6 +120,7 @@ public partial class MainWindowViewModel : ViewModelBase
             var func = funcsStore.AddNew<TableFunction>();
             AddTableFunctionToView(func);
             FunctionsMenuSubItems[FunctionsMenuSubItems.Count - 1].IsChecked = true;
+            ActiveTableFunctionViewModel = tableFunctions[tableFunctions.Count - 1];
             Title = $"Построитель функций - Функция {FunctionsMenuSubItems.Count - 1}";
         }
         else
@@ -124,5 +138,27 @@ public partial class MainWindowViewModel : ViewModelBase
         var editTableVm = new TableFunctionViewModel(func, sp.GetService<IClipBoardService>());
         tableFunctions.Add(editTableVm);
         return editTableVm;
+    }
+
+    protected void ShowDialog(ViewModelBase vm)
+    {
+        MainViewOpacity = 0.3;
+        ModelOpacity = 1.0;
+        MainViewEnabled = false;
+        ModelEnabled = true;
+        Model = vm;
+    }
+
+    protected void CloseDialog(ViewModelBase vm)
+    {
+        MainViewOpacity = 1.0;
+        ModelOpacity = 0;
+        MainViewEnabled = true;
+        ModelEnabled = false;
+        Model = null;
+        if (vm is MessageBoxViewModel dvm)
+        {
+            
+        }
     }
 }

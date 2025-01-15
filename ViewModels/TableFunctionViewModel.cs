@@ -1,87 +1,81 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FunctionBuilder.Abstract;
-using LiveChartsCore.Defaults;
 
-namespace FunctionBuilder.ViewModels
+namespace FunctionBuilder.ViewModels;
+public partial class TableFunctionViewModel : ViewModelBase
 {
-    public partial class TableFunctionViewModel : ViewModelBase
+    [ObservableProperty]
+    private ObservableCollection<PointViewModel> points;
+    [ObservableProperty]
+    private ObservableCollection<PointViewModel> selectedItems;
+    private IClipBoardService cs;
+
+
+    public TableFunctionViewModel(IFunction dataSource, IClipBoardService cs)
     {
-        [ObservableProperty]
-        private ObservableCollection<PointViewModel> points;
-        [ObservableProperty]
-        private ObservableCollection<PointViewModel> selectedItems;
-        private IClipBoardService cs;
-
-
-        public TableFunctionViewModel(IFunction dataSource, IClipBoardService cs)
+        this.cs = cs;
+        var ds = dataSource.PointsData;
+        SelectedItems = new ObservableCollection<PointViewModel>();
+        if (ds is ObservableCollection<PointViewModel> ocDs)
         {
-            this.cs = cs;
-            var ds = dataSource.PointsData;
-            SelectedItems = new ObservableCollection<PointViewModel>();
-            if(ds is ObservableCollection<PointViewModel> ocDs)
+            Points = ocDs;
+        }
+        else
+        {
+            throw new ArgumentException($"Неверный тип аргумента {nameof(dataSource)}");
+        }
+    }
+
+    public async void MenuPasteCommand()
+    {
+        var items = await cs.Fetch();
+        var index = Points.IndexOf(SelectedItems.LastOrDefault());
+        if (index != -1)
+        {
+            foreach (var item in items)
             {
-                Points = ocDs;
-            }
-            else
-            {
-                throw new ArgumentException($"Неверный тип аргумента {nameof(dataSource)}");
+                Points.Insert(index++, item);
             }
         }
-
-        public async void MenuPasteCommand()
+        else
         {
-            var items = await cs.Fetch();
-            var index = Points.IndexOf(SelectedItems.LastOrDefault());
-            if(index != -1)
+            foreach (var item in items)
             {
-                foreach(var item in items)
-                {
-                    Points.Insert(index++, item);
-                }
-            }
-            else
-            {
-                foreach(var item in items)
-                {
-                    Points.Add(item);
-                }
+                Points.Add(item);
             }
         }
+    }
 
-        public async void MenuCopyCommand()
+    public async void MenuCopyCommand()
+    {
+        await cs.Put(Points);
+    }
+
+    public void AddItemCommand()
+    {
+        var index = Points.IndexOf(SelectedItems.FirstOrDefault());
+        if (index != -1)
         {
-            await cs.Put(Points);
+            Points.Insert(index, new PointViewModel(0, 0));
         }
-
-        public void AddItemCommand()
+        else
         {
-            var index = Points.IndexOf(SelectedItems.FirstOrDefault());
-            if(index != -1)
-            {
-                Points.Insert(index, new PointViewModel(0,0));
-            }
-            else
-            {
-                Points.Add(new PointViewModel(0,0));
-            }
+            Points.Add(new PointViewModel(0, 0));
         }
+    }
 
-        public void DelItemCommand()
+    public void DelItemCommand()
+    {
+        var array = SelectedItems.ToArray();
+        foreach (var item in array)
         {
-            var array = SelectedItems.ToArray();
-            foreach(var item in array)
+            var index = Points.IndexOf(item);
+            if (index != -1)
             {
-                var index = Points.IndexOf(item);
-                if(index != -1)
-                {
-                    Points.RemoveAt(index);
-                }
+                Points.RemoveAt(index);
             }
         }
     }
