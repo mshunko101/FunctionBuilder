@@ -1,12 +1,13 @@
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Xml.Serialization;
 using FunctionBuilder.ViewModels;
 
 namespace FunctionBuilder.Abstract;
 
-public interface IFunction : IXmlSerializable
+public interface IFunction : IXmlSerializable, INotifyCollectionChanged, IList<PointViewModel>
 {
     string Name { get; }
-    IList<PointViewModel> PointsData { get; }
+    IReadOnlyCollection<PointViewModel> PointsData { get; }
     bool Invert();
 }

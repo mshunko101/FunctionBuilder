@@ -13,6 +13,7 @@ using LiveChartsCore.SkiaSharpView.Drawing;
 using System;
 using LiveChartsCore.Kernel;
 using Avalonia.Input;
+using System.Collections.Generic;
 
 namespace FunctionBuilder.ViewModels;
 public partial class ChartViewModel : ViewModelBase
@@ -106,16 +107,19 @@ public partial class ChartViewModel : ViewModelBase
                     foreach (var item in e.NewItems)
                     {
                         var function = (IFunction)item;
-                        Series.Add(new LineSeries<PointViewModel>(function.PointsData)
+                        if(function.PointsData is IList<PointViewModel> list)
                         {
-                            GeometrySize = 5,
-                            Fill = null,
-                            DataLabelsSize = 20,
-                            DataLabelsPaint = new SolidColorPaint(SKColors.Black),
-                            LineSmoothness = 0,
-                            Mapping = (sample, index) => new(sample.X, sample.Y),
-                            Tag = function
-                        });
+                            Series.Add(new LineSeries<PointViewModel>(list)
+                            {
+                                GeometrySize = 5,
+                                Fill = null,
+                                DataLabelsSize = 20,
+                                DataLabelsPaint = new SolidColorPaint(SKColors.Black),
+                                LineSmoothness = 0,
+                                Mapping = (sample, index) => new(sample.X, sample.Y),
+                                Tag = function
+                            });
+                        }
                     }
                 }
                 break;

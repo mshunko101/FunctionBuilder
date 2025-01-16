@@ -14,7 +14,7 @@ public class TableFunction : ObservableCollection<PointViewModel>, IFunction
         Name = nameof(TableFunction);
     }
     public string Name { get; set; }
-    public IList<PointViewModel> PointsData => this;
+    public IReadOnlyCollection<PointViewModel> PointsData => this;
     public XmlSchema? GetSchema()
     {
         return null;

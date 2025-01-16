@@ -2,61 +2,56 @@ using System.Collections;
 using Avalonia;
 using Avalonia.Controls;
 
-namespace FunctionBuilder.Utils
+namespace FunctionBuilder.Utils;
+public class DataGridAdditionalProperties : AvaloniaObject
 {
-    public class DataGridAdditionalProperties : AvaloniaObject
+    public static readonly AttachedProperty<object> SelectedItemsProperty =
+    AvaloniaProperty.RegisterAttached<DataGrid, Control, object>("SelectedItems");
+    static object? currValue;
+
+    static DataGridAdditionalProperties()
     {
-        public static readonly AttachedProperty<object> SelectedItemsProperty = 
-        AvaloniaProperty.RegisterAttached<DataGrid, Control, object>("SelectedItems");
-        static object? currValue;
+        SelectedItemsProperty.Changed.AddClassHandler<DataGrid>(HandleSelectedItemsPropertyChanged);
+    }
 
-        static DataGridAdditionalProperties()
+    private static void HandleSelectedItemsPropertyChanged(DataGrid sender, AvaloniaPropertyChangedEventArgs args)
+    {
+        if (currValue != args.NewValue)
         {
-            SelectedItemsProperty.Changed.AddClassHandler<DataGrid>(HandleSelectedItemsPropertyChanged);
+            sender.SelectionChanged += OnSelectionChanged;
         }
-
-        /// <summary>
-        /// <see cref="CommandProperty"/> changed event handler.
-        /// </summary>
-        private static void HandleSelectedItemsPropertyChanged(DataGrid sender, AvaloniaPropertyChangedEventArgs args)
-        { 
-            if (currValue != args.NewValue)
-            {
-                sender.SelectionChanged += OnSelectionChanged;
-            }
-            else
-            {
-                 sender.SelectionChanged -= OnSelectionChanged;
-            }
-            currValue = args.NewValue;
-        }
-
-        private static void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+        else
         {
-            if(sender is DataGrid dataGrid)
+            sender.SelectionChanged -= OnSelectionChanged;
+        }
+        currValue = args.NewValue;
+    }
+
+    private static void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (sender is DataGrid dataGrid)
+        {
+            var obj = dataGrid.GetValue(SelectedItemsProperty);
+            if (obj is IList list)
             {
-                var obj = dataGrid.GetValue(SelectedItemsProperty);
-                if(obj is IList list)
+                list.Clear();
+                foreach (var item in dataGrid.SelectedItems)
                 {
-                    list.Clear();
-                    foreach(var item in dataGrid.SelectedItems)
-                    {
-                        list.Add(item);
-                    }
+                    list.Add(item);
                 }
             }
         }
-
-        public static object GetSelectedItems(DataGrid element)
-        {
-            return element.GetValue(SelectedItemsProperty);
-        }
-
-        public static void SetSelectedItems(DataGrid element, object value)
-        {
-            element.SetValue(SelectedItemsProperty, value);
-        }
-        
     }
-  
+
+    public static object GetSelectedItems(DataGrid element)
+    {
+        return element.GetValue(SelectedItemsProperty);
+    }
+
+    public static void SetSelectedItems(DataGrid element, object value)
+    {
+        element.SetValue(SelectedItemsProperty, value);
+    }
+
 }
+

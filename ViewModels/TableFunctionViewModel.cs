@@ -11,12 +11,12 @@ public partial class TableFunctionViewModel : ViewModelBase
     private ObservableCollection<PointViewModel> points;
     [ObservableProperty]
     private ObservableCollection<PointViewModel> selectedItems;
-    private IClipBoardService cs;
+    private IClipBoardService clipBoardService;
 
 
     public TableFunctionViewModel(IFunction dataSource, IClipBoardService cs)
     {
-        this.cs = cs;
+        clipBoardService = cs;
         var ds = dataSource.PointsData;
         SelectedItems = new ObservableCollection<PointViewModel>();
         if (ds is ObservableCollection<PointViewModel> ocDs)
@@ -31,7 +31,7 @@ public partial class TableFunctionViewModel : ViewModelBase
 
     public async void MenuPasteCommand()
     {
-        var items = await cs.Fetch();
+        var items = await clipBoardService.Fetch();
         var index = Points.IndexOf(SelectedItems.LastOrDefault()!);
         if (index != -1)
         {
@@ -51,7 +51,7 @@ public partial class TableFunctionViewModel : ViewModelBase
 
     public async void MenuCopyCommand()
     {
-        await cs.Put(Points);
+        await clipBoardService.Put(SelectedItems);
     }
 
     public void AddItemCommand()
