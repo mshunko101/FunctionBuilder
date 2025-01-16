@@ -26,6 +26,7 @@
             BorderThickness="1" BorderBrush="Gray">
     <DataGrid.KeyBindings>
       <KeyBinding Gesture="Insert" Command="{Binding AddItemCommand}"/>
+      <KeyBinding Gesture="Delete" Command="{Binding DelItemCommand}"/>
       <KeyBinding Gesture="Ctrl+V" Command="{Binding MenuPasteCommand}"/>
       <KeyBinding Gesture="Ctrl+C" Command="{Binding MenuCopyCommand}"/>
     </DataGrid.KeyBindings>
