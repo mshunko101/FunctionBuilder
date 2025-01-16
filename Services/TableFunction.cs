@@ -23,7 +23,7 @@ public class TableFunction : ObservableCollection<PointViewModel>, IFunction
     public bool Invert()
     {
         var notExist = this.GroupBy(x => x.Y).Any(s => s.Count() > 1);
-        if(notExist)
+        if(notExist || this.Count == 0)
         {
             return false;
         }

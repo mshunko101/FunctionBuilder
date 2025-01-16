@@ -38,8 +38,8 @@
      </ContextMenu>
     </DataGrid.ContextMenu> 
     <DataGrid.Columns>
-      <DataGridTextColumn Header="X" Width="1*" Binding="{Binding X}"/>
-      <DataGridTextColumn Header="Y"  Width="1*" Binding="{Binding Y}" />
+      <DataGridTextColumn Header="Абсолютная отметка [мм]" Width="1*" Binding="{Binding Y}"/>
+      <DataGridTextColumn Header="Температура [°C]"  Width="1*" Binding="{Binding X}" />
     </DataGrid.Columns>
   </DataGrid>
   <StackPanel Orientation="Horizontal" Grid.Row="1">

@@ -60,6 +60,9 @@
                         </Style>
                     </MenuItem.Styles>  
                 </MenuItem>
+                <MenuItem Header="О Программе">
+                    <MenuItem Header="Исполнитель: Шунько Михаил Геннадьевич"/>
+                </MenuItem>
                 </Menu>
             </DockPanel>
             <vw:ChartView Grid.Row="1" DataContext="{Binding ChartViewModel}" Grid.Column="0"/>

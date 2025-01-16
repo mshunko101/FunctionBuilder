@@ -48,8 +48,11 @@ public partial class ChartViewModel : ViewModelBase
                     SeparatorsPaint = new SolidColorPaint(new SKColor(200, 200, 200)),
                     TicksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
                     ForceStepToMin = true,
-                    MinStep = 1,
-                    Name = "Температура [°C]"
+                    ShowSeparatorLines = true,
+                    MinStep = 3,
+                    Name = "Температура [°C]",
+                    SubticksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
+                    SubseparatorsCount = 10,
                 },
             };
 
@@ -58,14 +61,16 @@ public partial class ChartViewModel : ViewModelBase
                 new Axis()
                 {
                     LabelsPaint = new SolidColorPaint(SKColors.Black),
-                    IsInverted = true,
-                    MaxLimit = 10000,
-                    MinLimit = 0,
+                    MaxLimit = 0,
+                    MinLimit = -10000,
+                    Position = LiveChartsCore.Measure.AxisPosition.Start,
                     SeparatorsPaint = new SolidColorPaint(new SKColor(200, 200, 200)),
                     TicksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
-                    Name = "Абсолютная отметка [мм]"
+                    Name = "Абсолютная отметка [мм]",
+                    SubticksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
+                    SubseparatorsCount = 10,
                 },
-            };
+        };
     }
 
     public void ChartPointPointerDownCommand(ChartPoint args)
