@@ -9,7 +9,12 @@
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
              x:DataType="vm:MessageBoxViewModel"
-             x:Class="FunctionBuilder.Views.MessageBoxView">
+             x:Class="FunctionBuilder.Views.MessageBoxView"
+             XYFocus.NavigationModes="Enabled"
+             XYFocus.UpNavigationStrategy="Projection"
+             XYFocus.DownNavigationStrategy="Projection"
+             XYFocus.LeftNavigationStrategy="Projection"
+             XYFocus.RightNavigationStrategy="Projection">
          <Border>
             <Border MaxWidth="600" MaxHeight="200" BorderThickness="1" BorderBrush="#AAAAAA" Background="WhiteSmoke">
                 <Grid>
@@ -21,10 +26,9 @@
                     <TextBlock Grid.Row="0" VerticalAlignment="Center"  HorizontalAlignment="Center" Text="{Binding Title}"/>
                     <TextBlock Grid.Row="1" VerticalAlignment="Center"  HorizontalAlignment="Center" Text="{Binding Message}"/>
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                         <Button HorizontalAlignment="Center" HorizontalContentAlignment="Center" Width="100" Content="OK" Command="{Binding OkCommand}"/>
-                         <Button HorizontalAlignment="Center" HorizontalContentAlignment="Center" Width="100" Content="Отмена" Command="{Binding CancelCommand}"/>
+                         <Button HorizontalAlignment="Center" x:Name="first" XYFocus.Focused="True" TabIndex="0" XYFocus.Right="{Binding #first}"  HorizontalContentAlignment="Center" Width="100" Content="OK" Command="{Binding OkCommand}"/>
+                         <Button HorizontalAlignment="Center" x:Name="last" XYFocus.Left="{Binding #last}" HorizontalContentAlignment="Center" Width="100" Content="Отмена" Command="{Binding CancelCommand}"/>
                     </StackPanel>
-                   
                 </Grid>
             </Border>
         </Border>

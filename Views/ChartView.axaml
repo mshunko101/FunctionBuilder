@@ -16,6 +16,7 @@
             XAxes="{Binding XAxes}" 
             YAxes="{Binding YAxes}"
             LegendPosition="Bottom"
+            TooltipPosition="Top"
             ZoomMode="None">
       </lvc:CartesianChart>
       

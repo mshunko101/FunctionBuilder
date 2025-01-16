@@ -14,6 +14,7 @@ using System;
 using LiveChartsCore.Kernel;
 using Avalonia.Input;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace FunctionBuilder.ViewModels;
 public partial class ChartViewModel : ViewModelBase
@@ -115,12 +116,15 @@ public partial class ChartViewModel : ViewModelBase
                             {
                                 GeometrySize = 5,
                                 Fill = null,
-                                DataLabelsSize = 20,
-                                DataLabelsPaint = new SolidColorPaint(SKColors.Black),
+                                DataLabelsSize = 0,
+                                DataLabelsPaint = null,
                                 LineSmoothness = 0,
                                 Mapping = (sample, index) => new(sample.X, sample.Y),
                                 Tag = function,
-                                Name = $"{function.Name} {e.NewStartingIndex + 1}"
+                                Name = $"{function.Name} {e.NewStartingIndex + 1}",
+                                XToolTipLabelFormatter = null, 
+                                YToolTipLabelFormatter = point => $"({point.Coordinate.PrimaryValue.ToString(CultureInfo.InvariantCulture)}, {point.Coordinate.SecondaryValue.ToString(CultureInfo.InvariantCulture)})",
+                                DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top
                             });
                         }
                     }
