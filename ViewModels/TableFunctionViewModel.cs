@@ -58,8 +58,15 @@ public partial class TableFunctionViewModel : ViewModelBase
     {
         var index = Points.IndexOf(SelectedItems.FirstOrDefault()!);
         if (index != -1)
-        {
-            Points.Insert(index, new PointViewModel(0, 0));
+        {   
+            if(index == Points.Count - 1)
+            {
+                Points.Add(new PointViewModel(0, 0));
+            }
+            else
+            {
+                Points.Insert(index, new PointViewModel(0, 0));
+            }
         }
         else
         {

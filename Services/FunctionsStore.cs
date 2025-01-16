@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 using FunctionBuilder.Utils;
 using System.IO;
 using System.Collections;
+using Avalonia.Threading;
 
 namespace FunctionBuilder.Services;
 
@@ -17,14 +18,19 @@ public class FunctionsStore : IFunctionsStore
     private ObservableCollection<IFunction> _functionsStore;
     public event NotifyCollectionChangedEventHandler? CollectionChanged;
     private string lastState;
+    DispatcherTimer wasModifiedTimer;
 
     public FunctionsStore()
     {
         lastState = string.Empty;
         _functionsStore = new ObservableCollection<IFunction>();
         _functionsStore.CollectionChanged += OnCollectionChanged;
+        wasModifiedTimer = new DispatcherTimer(DispatcherPriority.ApplicationIdle);
+        wasModifiedTimer.Interval = TimeSpan.FromSeconds(1);
+        wasModifiedTimer.Tick += OnCheckIsModified;
+        wasModifiedTimer.Start();
     }
-
+ 
     private void OnCollectionChanged(object? _, NotifyCollectionChangedEventArgs e)
     {
         CollectionChanged?.Invoke(this, e);
@@ -40,11 +46,6 @@ public class FunctionsStore : IFunctionsStore
         var func = Activator.CreateInstance(typeof(T)) as IFunction ?? throw new ArgumentException("Невозможно создать экземпляр типа");
         _functionsStore.Add(func);
         return func;
-    }
-
-    public IEnumerable<IFunction> GetEnumerable()
-    {
-        return _functionsStore;
     }
 
     public void RemoveAll()
@@ -94,10 +95,8 @@ public class FunctionsStore : IFunctionsStore
     }
 
     public int Count => _functionsStore.Count;
-
-    public bool IsModified => WasModified();
-
-    protected bool WasModified()
+    
+    private void OnCheckIsModified(object? sender, EventArgs e)
     {
         using (StringWriter textWriter = new StringWriter())
         {
@@ -105,9 +104,17 @@ public class FunctionsStore : IFunctionsStore
             XmlSerializer serializer = new XmlSerializer(GetType());
             serializer.Serialize(writer, this);
             writer.Close();
+            if(string.IsNullOrEmpty(lastState))
+            {
+                lastState = textWriter.ToString();
+                return;
+            }
             var result = textWriter.ToString() != lastState;
-            lastState = textWriter.ToString();
-            return result;
+            lastState =  textWriter.ToString() ;
+            if(result)
+            {
+                OnCollectionChanged(this, default!);
+            }
         }
     }
 
@@ -119,5 +126,10 @@ public class FunctionsStore : IFunctionsStore
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
+    }
+
+    public IFunction GetAt(int index)
+    {
+        return _functionsStore[index];
     }
 }

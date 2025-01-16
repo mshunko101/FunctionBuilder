@@ -46,6 +46,9 @@
                     <Separator/>
                     <MenuItem Header="_Выход" Command="{Binding ExitCommand}"/>
                 </MenuItem>
+                <MenuItem Header="_Операции">
+                    <MenuItem Header="_Преобразовать в обратную функцию" Command="{Binding InvartFunctionCommand}"/>
+                </MenuItem>
                 <MenuItem Header="_Функция" ItemsSource="{Binding #mainWindowView.((vm:MainWindowViewModel)DataContext).FunctionsMenuSubItems}">
                     <MenuItem.Styles>
                         <Style Selector="MenuItem" x:DataType="vm:MenuItemViewModel">

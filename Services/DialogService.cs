@@ -29,16 +29,21 @@ public class DialogService : IDialogService
         options.AllowMultiple = false;
         options.FileTypeFilter = new List<FilePickerFileType>()
             {
-                new FilePickerFileType("XML")
+                new FilePickerFileType("XML document")
                 {
-                    Patterns = new List<string>(){"xml"}
+                    Patterns = new[] { "*.xml", "*.XML" },
+                    MimeTypes = new[] { "application/xml" }
                 }
             };
 
         var result = await _mainWindow.StorageProvider.OpenFilePickerAsync(options);
         if (result.Count() > 0)
         {
-            return result.First().Path.ToString();
+            var path = result[0].TryGetLocalPath();
+            if (!string.IsNullOrEmpty(path))
+            {
+                return path;
+            }
         }
         return string.Empty;
     }
@@ -56,7 +61,11 @@ public class DialogService : IDialogService
         var result = await _mainWindow.StorageProvider.SaveFilePickerAsync(options);
         if (result != null)
         {
-            return result.Path.ToString();
+            var path = result.TryGetLocalPath();
+            if (!string.IsNullOrEmpty(path))
+            {
+                return path;
+            }
         }
         return string.Empty;
     }

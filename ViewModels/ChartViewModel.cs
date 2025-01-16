@@ -12,6 +12,7 @@ using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView.Drawing;
 using System;
 using LiveChartsCore.Kernel;
+using Avalonia.Input;
 
 namespace FunctionBuilder.ViewModels;
 public partial class ChartViewModel : ViewModelBase
@@ -25,18 +26,6 @@ public partial class ChartViewModel : ViewModelBase
     private IFunctionsStore funcsStore;
     private bool _isPointClicked;
     private PointViewModel? _draggedPoint;
-
-    private SKColor[] seriesColors = new SKColor[]
-    {
-            new SKColor(255, 0, 0),
-            new SKColor(0, 255, 0),
-            new SKColor(0, 0, 255),
-            new SKColor(255, 255, 0),
-            new SKColor(0, 255, 255),
-            new SKColor(127, 255, 200),
-            new SKColor(255, 127, 0),
-            new SKColor(50, 127, 255),
-    };
 
     public ChartViewModel(IFunctionsStore _funcsStore)
     {
@@ -77,7 +66,7 @@ public partial class ChartViewModel : ViewModelBase
 
     public void ChartPointPointerDownCommand(ChartPoint args)
     {
-        if (args.Context.DataSource is PointViewModel point)
+        if (args != null && args.Context != null && args.Context.DataSource is PointViewModel point)
         {
             _draggedPoint = point;
             _isPointClicked = true;
@@ -105,6 +94,10 @@ public partial class ChartViewModel : ViewModelBase
 
     private void OnFunctionsCollectionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        if(e == null)
+        {
+            return;
+        }
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
@@ -115,8 +108,10 @@ public partial class ChartViewModel : ViewModelBase
                         var function = (IFunction)item;
                         Series.Add(new LineSeries<PointViewModel>(function.PointsData)
                         {
+                            GeometrySize = 5,
+                            Fill = null,
                             DataLabelsSize = 20,
-                            DataLabelsPaint = new SolidColorPaint(seriesColors[Series.Count%seriesColors.Length]),
+                            DataLabelsPaint = new SolidColorPaint(SKColors.Black),
                             LineSmoothness = 0,
                             Mapping = (sample, index) => new(sample.X, sample.Y),
                             Tag = function

@@ -8,7 +8,7 @@ public interface IFunctionsStore : INotifyCollectionChanged, IXmlSerializable, I
 {
     IFunction AddNew<T>();
     void Add(IFunction func);
+    IFunction GetAt(int index);
     int Count { get; }
     void RemoveAll();
-    bool IsModified { get; }
 }

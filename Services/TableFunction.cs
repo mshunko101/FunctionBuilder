@@ -4,6 +4,7 @@ using FunctionBuilder.Abstract;
 using FunctionBuilder.ViewModels;
 using System.Xml.Schema;
 using System.Xml;
+using System.Linq;
 
 namespace FunctionBuilder.Services;
 public class TableFunction : ObservableCollection<PointViewModel>, IFunction
@@ -17,6 +18,22 @@ public class TableFunction : ObservableCollection<PointViewModel>, IFunction
     public XmlSchema? GetSchema()
     {
         return null;
+    }
+
+    public bool Invert()
+    {
+        var notExist = this.GroupBy(x => x.Y).Any(s => s.Count() > 1);
+        if(notExist)
+        {
+            return false;
+        }
+        var array = this.ToArray();
+        this.Clear();
+        foreach(var item in array)
+        {
+            this.Add(new PointViewModel(item.Y, item.X));
+        }
+        return true;
     }
 
     public void ReadXml(XmlReader reader)

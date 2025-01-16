@@ -20,7 +20,11 @@
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" VerticalAlignment="Center"  HorizontalAlignment="Center" Text="{Binding Title}"/>
                     <TextBlock Grid.Row="1" VerticalAlignment="Center"  HorizontalAlignment="Center" Text="{Binding Message}"/>
-                    <Button Grid.Row="2" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Width="100" Content="OK" Command="{Binding CloseCommand}"/>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                         <Button HorizontalAlignment="Center" HorizontalContentAlignment="Center" Width="100" Content="OK" Command="{Binding OkCommand}"/>
+                         <Button HorizontalAlignment="Center" HorizontalContentAlignment="Center" Width="100" Content="Отмена" Command="{Binding CancelCommand}"/>
+                    </StackPanel>
+                   
                 </Grid>
             </Border>
         </Border>
