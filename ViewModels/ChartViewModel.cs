@@ -47,7 +47,8 @@ public partial class ChartViewModel : ViewModelBase
                     SeparatorsPaint = new SolidColorPaint(new SKColor(200, 200, 200)),
                     TicksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
                     ForceStepToMin = true,
-                    MinStep = 1
+                    MinStep = 1,
+                    Name = "Температура [°C]"
                 },
             };
 
@@ -61,6 +62,7 @@ public partial class ChartViewModel : ViewModelBase
                     MinLimit = 0,
                     SeparatorsPaint = new SolidColorPaint(new SKColor(200, 200, 200)),
                     TicksPaint = new SolidColorPaint(new SKColor(35, 35, 35)),
+                    Name = "Абсолютная отметка [мм]"
                 },
             };
     }
@@ -117,7 +119,8 @@ public partial class ChartViewModel : ViewModelBase
                                 DataLabelsPaint = new SolidColorPaint(SKColors.Black),
                                 LineSmoothness = 0,
                                 Mapping = (sample, index) => new(sample.X, sample.Y),
-                                Tag = function
+                                Tag = function,
+                                Name = $"{function.Name} {e.NewStartingIndex + 1}"
                             });
                         }
                     }

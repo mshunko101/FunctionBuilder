@@ -14,7 +14,8 @@
             PointerMoveCommand="{Binding PointerMoveCommand}"
             Series="{Binding Series}" 
             XAxes="{Binding XAxes}" 
-            YAxes="{Binding YAxes}"  
+            YAxes="{Binding YAxes}"
+            LegendPosition="Bottom"
             ZoomMode="None">
       </lvc:CartesianChart>
       

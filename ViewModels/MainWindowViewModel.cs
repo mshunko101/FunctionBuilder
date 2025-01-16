@@ -4,13 +4,9 @@ using System.Collections.Generic;
 using FunctionBuilder.Services;
 using System.Linq;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using Avalonia.Controls;
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using Avalonia;
 using System.IO;
-using FunctionBuilder.Utils;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Threading;
@@ -180,7 +176,7 @@ public partial class MainWindowViewModel : ViewModelBase
         else
         {
             ActiveTableFunctionViewModel = tableFunctions[index - 1];
-            Title = $"Построитель функций - Функция {index}";
+            Title = $"Построитель функций - Функция {index} *";
             activeFunction = index - 1;
         }
 
